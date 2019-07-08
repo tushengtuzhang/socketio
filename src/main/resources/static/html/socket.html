@@ -43,7 +43,7 @@
             serverOutput('<span class="connect-msg">连接成功</span>');
         });
         socket.on('push_event', function (data) {
-            output('<span class="username-msg">' + data + ' </span>');
+            output('<span class="username-msg">' + JSON.stringify(data) + ' </span>');
             console.log(data);
         });
 

@@ -8,6 +8,8 @@ import com.alibaba.nls.client.protocol.asr.SpeechTranscriber;
 import com.zts.socketio.ali.AliSpeechTranscriberListener;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
+import java.io.IOException;
 import java.io.InputStream;
 
 /**
@@ -17,14 +19,18 @@ import java.io.InputStream;
 public class AliAudioToTextService {
 
     private static String appKey = "n7WeQj4ACKglzInX";
+
     private static String accessKey="kqZpof5RsV52y28g";
     private static String accessKeySecret="JT6vtVNLqMWbq91O7xSN4ObVDo4ExQ";
+
     private String url="ws://nls-gateway.cn-shanghai-internal.aliyuncs.com/ws/v1";
 
     private static NlsClient client;
 
-    static{
+    @PostConstruct
+    public void init() throws IOException {
         AccessToken accessToken = new AccessToken(accessKey,accessKeySecret);
+        accessToken.apply();
         client = new NlsClient(accessToken.getToken());
     }
 
@@ -32,13 +38,12 @@ public class AliAudioToTextService {
 
         process(inputStream);
 
-        client.shutdown();
-
     }
 
     public void process(InputStream inputStream) {
         SpeechTranscriber transcriber = null;
         try {
+
             //创建实例,建立连接
             transcriber = new SpeechTranscriber(client, new AliSpeechTranscriberListener());
             transcriber.setAppKey(appKey);
@@ -58,9 +63,11 @@ public class AliAudioToTextService {
             transcriber.send(inputStream, 3200, 100);
             //transcriber.send(ins);
             //通知服务端语音数据发送完毕,等待服务端处理完成
-            transcriber.stop();
+
+            //transcriber.stop();
 
         } catch (Exception e) {
+            e.printStackTrace();
             System.err.println(e.getMessage());
         } finally {
             if (null != transcriber) {

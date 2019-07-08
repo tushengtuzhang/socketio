@@ -2,8 +2,12 @@ package com.zts.socketio.ali;
 
 import com.alibaba.nls.client.protocol.asr.SpeechTranscriberListener;
 import com.alibaba.nls.client.protocol.asr.SpeechTranscriberResponse;
+import com.zts.socketio.entity.PushMessage;
 import com.zts.socketio.service.SocketIOService;
+import com.zts.socketio.utils.SpringContextUtils;
 import org.springframework.stereotype.Service;
+
+import javax.annotation.Resource;
 
 /**
  * 语音转换监听
@@ -11,6 +15,8 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class AliSpeechTranscriberListener extends SpeechTranscriberListener {
+
+    @Resource
     private SocketIOService socketIOService;
 
     @Override
@@ -27,7 +33,13 @@ public class AliSpeechTranscriberListener extends SpeechTranscriberListener {
     @Override
     public void onSentenceEnd(SpeechTranscriberResponse speechTranscriberResponse) {
         System.out.println(speechTranscriberResponse);
+        System.out.println(speechTranscriberResponse.getTransSentenceText());
         //TODO 返回数据
+        PushMessage pushMessage=new PushMessage("88",speechTranscriberResponse.getTransSentenceText());
+
+        SocketIOService socketIOService=(SocketIOService) SpringContextUtils.getBean("socketIOService");
+
+        socketIOService.pushMessageToUser(pushMessage);
 
     }
 
