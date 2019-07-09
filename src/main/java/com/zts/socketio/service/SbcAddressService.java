@@ -19,7 +19,7 @@ public class SbcAddressService {
     public AddressResponse get(String address) throws Exception {
 
         Map<String,String> headers=new HashMap<>();
-        headers.put("Content-type","application/json");
+        headers.put("Content-Type","application/json");
         String json = HttpUtils.post(url,address,headers);
 
         return gson.fromJson(json,AddressResponse.class);
