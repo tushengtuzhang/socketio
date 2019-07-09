@@ -13,15 +13,14 @@ import java.util.Map;
  */
 @Service
 public class SbcAddressService {
-    private String url="http://nlu-dev.talkinggenie.com/ccdmnlu/alarm/event_extraction";
+    private String url="http://nlu-alpha.talkinggenie.com/ccdmnlu/alarm/event_extraction";
     private Gson gson= new Gson();
 
     public AddressResponse get(String address) throws Exception {
 
-        Map<String,String> params=new HashMap<>();
-        params.put("query",address);
-
-        String json = HttpUtils.post(url, params);
+        Map<String,String> headers=new HashMap<>();
+        headers.put("Content-type","application/json");
+        String json = HttpUtils.post(url,address,headers);
 
         return gson.fromJson(json,AddressResponse.class);
     }
